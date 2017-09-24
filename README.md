@@ -1,7 +1,7 @@
 # Decaf-Compiler
 --------------------------------------
  ### Usage
-* Run 'decafc.py' with the input Decaf program as the first argument
+* Run `src/decafc.py` with the input Decaf program as the first argument
     it will run for both file_name and file_name.decaf
 * Note: you can find some sample decaf test files under `test/` directory
 

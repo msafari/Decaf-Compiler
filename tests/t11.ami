@@ -1,0 +1,66 @@
+.static_data 2
+# ---A---
+move_immed_i t0, 1
+halloc t1, t0
+save t1
+call C_1
+restore t1
+C_1:
+# ---B---
+move_immed_i t2, 1
+halloc t3, t2
+save t3
+call C_2
+restore t3
+C_2:
+# ---Out---
+M_print_3:
+ret 
+
+M_print_4:
+ret 
+
+M_print_5:
+ret 
+
+M_print_6:
+ret 
+
+# ---C---
+M_f_7:
+move_immed_i t10, 0
+move a0, t10
+ret
+ret 
+
+M_f_8:
+move_immed_i t13, 0
+move a0, t13
+ret
+ret 
+
+M_f_9:
+move_immed_i t16, 1
+move a0, t16
+ret
+ret 
+
+M_f_10:
+move_immed_i t19, 2
+move a0, t19
+ret
+ret 
+
+move_immed_i t20, 0
+halloc t21, t20
+save t21
+call C_3
+restore t21
+C_3:
+# ---In---
+M_scan_int_1:
+ret 
+
+M_scan_float_2:
+ret 
+

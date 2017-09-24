@@ -1,4 +1,5 @@
 from Stmt import *
+from ast.Type import * 
 from ast.ast_helpers import *
 import ast.Config as Config
 

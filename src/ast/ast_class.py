@@ -1,5 +1,5 @@
 import ast
-from ast_helpers import *
+import ast_helpers
 from Statements.BlockStmt import *
 from Statements.SkipStmt import *
 from Statements.ReturnStmt import *

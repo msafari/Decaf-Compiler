@@ -1,0 +1,119 @@
+.static_data 5
+# ---A---
+move_immed_i t0, 1
+halloc t1, t0
+save t1
+call C_1
+restore t1
+C_1:
+# ---C---
+move_immed_i t2, 1
+halloc t3, t2
+save t3
+call C_2
+restore t3
+C_2:
+# ---B---
+move_immed_i t4, 1
+halloc t5, t4
+save t5
+call C_3
+restore t5
+C_3:
+# ---E---
+M_f_7:
+move_immed_i t6, 1
+move_immed_i t7, 2
+#LINE 20 - binary 'eq' op
+isub t9, t6, t7
+bz t9, falseCase0
+#Equivalence is true
+move_immed_i t8, 1
+jmp afterCase1
+
+falseCase0:
+#Equivalence is falsemove_immed_i t8, 0
+jmp afterCase1
+
+afterCase1:
+bz t8, else_2
+move_immed_i t10, 2
+move_immed_i t11, 3
+#LINE 21 - binary 'lt' op
+ilt t12, t10, t11
+Loop_3:
+bz t12, End_loop_4
+move_immed_i t13, 1
+move a0, t13
+ret
+jmp Loop_3
+End_loop_4:
+move_immed_i t14, 2
+move a0, t14
+ret
+else_2:
+move_immed_i t15, 0
+move a0, t15
+ret
+ret 
+
+M_g_8:
+move_immed_i t16, 1
+move_immed_i t17, 2
+#LINE 28 - binary 'eq' op
+isub t19, t16, t17
+bz t19, falseCase5
+#Equivalence is true
+move_immed_i t18, 1
+jmp afterCase6
+
+falseCase5:
+#Equivalence is falsemove_immed_i t18, 0
+jmp afterCase6
+
+afterCase6:
+bz t18, else_7
+move_immed_i t20, 2
+move_immed_i t21, 3
+#LINE 29 - binary 'lt' op
+ilt t22, t20, t21
+Loop_8:
+bz t22, End_loop_9
+jmp Loop_8
+End_loop_9:
+else_7:
+ret 
+
+move_immed_i t23, 1
+halloc t24, t23
+save t24
+call C_4
+restore t24
+C_4:
+# ---D---
+move_immed_i t25, 1
+halloc t26, t25
+save t26
+call C_5
+restore t26
+C_5:
+# ---In---
+M_scan_int_1:
+ret 
+
+M_scan_float_2:
+ret 
+
+# ---Out---
+M_print_3:
+ret 
+
+M_print_4:
+ret 
+
+M_print_5:
+ret 
+
+M_print_6:
+ret 
+

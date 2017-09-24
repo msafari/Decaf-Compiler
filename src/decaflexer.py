@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import ply.lex as lex
+import lib.ply.lex as lex
 import sys
 
 errorflag = False

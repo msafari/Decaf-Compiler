@@ -1,3 +1,7 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+
 class AutoExpr(Expr):
     def __init__(self, arg, oper, when, lines):
         self.lines = lines

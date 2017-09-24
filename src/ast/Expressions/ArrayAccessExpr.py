@@ -1,3 +1,7 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+
 class ArrayAccessExpr(Expr):
     def __init__(self, base, index, lines):
         self.lines = lines

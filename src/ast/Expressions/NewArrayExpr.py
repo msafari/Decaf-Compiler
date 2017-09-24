@@ -1,3 +1,7 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+
 class NewArrayExpr(Expr):
     def __init__(self, basetype, args, lines):
         self.lines = lines

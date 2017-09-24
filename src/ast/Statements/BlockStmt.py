@@ -1,3 +1,6 @@
+from Stmt import *
+from SkipStmt import *
+
 class BlockStmt(Stmt):
     def __init__(self, stmtlist, lines):
         self.lines = lines

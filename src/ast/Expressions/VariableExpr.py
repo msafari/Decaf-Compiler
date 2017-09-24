@@ -1,3 +1,5 @@
+from Expr import *
+
 class VarExpr(Expr):
     def __init__(self, var, lines):
         self.lines = lines

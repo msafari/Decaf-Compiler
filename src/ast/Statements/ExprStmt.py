@@ -1,3 +1,5 @@
+from Stmt import *
+
 class ExprStmt(Stmt):
     def __init__(self, expr, lines):
         self.lines = lines

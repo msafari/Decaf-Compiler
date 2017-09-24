@@ -1,3 +1,7 @@
+from VarTable import *
+import Config
+lastmethod = 0
+
 class Method:
     """A class encoding methods and their attributes in Decaf"""
     def __init__(self, mname, mclass, visibility, storage, rtype):
@@ -29,6 +33,6 @@ class Method:
         return [v.type for v in self.vars.get_params()]
 
     def typecheck(self):
-        global current_method
-        current_method = self
+        Config.current_method = self
+        print "This is current_method: {0}".format(Config.current_method)
         self.body.typecheck()

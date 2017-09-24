@@ -1,3 +1,7 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+
 class BinaryExpr(Expr):
     def __init__(self, bop, arg1, arg2, lines):
         self.lines = lines

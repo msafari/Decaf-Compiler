@@ -1,3 +1,6 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
 class UnaryExpr(Expr):
     def __init__(self, uop, expr, lines):
         self.lines = lines

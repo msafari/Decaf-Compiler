@@ -1,3 +1,5 @@
+from Variable import *
+
 class VarTable:
     """ Table of variables in each method/constructor"""
     def __init__(self):

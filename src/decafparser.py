@@ -1,12 +1,13 @@
-import ply.yacc as yacc
+import lib.ply.yacc as yacc
 import decaflexer
 from decaflexer import tokens
 from decaflexer import lex
 
-import ast
+from ast import *
 
 import sys
 import logging
+
 precedence = (
     ('right', 'ASSIGN'),
     ('left', 'OR'),
@@ -74,7 +75,7 @@ def p_class_decl_head(p):
     if (c != None):
         signal_error('Class {0} already exists!'.format(cid), p.lineno(2))
     else:
-        c = ast.Class(cid, sc)
+        c = Class(cid, sc)
         ast.addtotable(ast.classtable, cid, c)
     current_class = c
     current_context = 'class'
@@ -125,7 +126,7 @@ def p_method_decl_header_void(p):
     global current_context, current_vartable, current_storage_kind
     current_context = 'method'
     (v, s) = current_modifiers
-    m = ast.Method(p[3], current_class, v, s, ast.Type('void'))
+    m = Method(p[3], current_class, v, s, Type('void'))
     current_class.add_method(m)
     current_vartable = m.vars
     current_storage_kind = s
@@ -136,7 +137,7 @@ def p_method_decl_header_nonvoid(p):
     global current_context, current_vartable, current_storage_kind
     current_context = 'method'
     (v, s) = current_modifiers
-    m = ast.Method(p[3], current_class, v, s, current_type)
+    m = Method(p[3], current_class, v, s, current_type)
     current_class.add_method(m)
     current_vartable = m.vars
     current_storage_kind = s
@@ -152,7 +153,7 @@ def p_constructor_header(p):
     global current_context, current_vartable, current_storage_kind
     current_context = 'method'
     (v, s) = current_modifiers
-    c = ast.Constructor(p[2], v)
+    c = Constructor(p[2], v)
     # note: 's' is ignored.  should we signal error for s?
     current_class.add_constructor(c)
     current_vartable = c.vars
@@ -193,22 +194,22 @@ def p_var_decl(p):
 def p_type_int(p):
     'type :  INT'
     global current_type
-    p[0] = current_type = ast.Type('int')
+    p[0] = current_type = Type('int')
 def p_type_bool(p):
     'type :  BOOLEAN'
     global current_type
-    p[0] = current_type = ast.Type('boolean')
+    p[0] = current_type = Type('boolean')
 def p_type_float(p):
     'type :  FLOAT'
     global current_type
-    p[0] = current_type = ast.Type('float')
+    p[0] = current_type = Type('float')
 def p_type_id(p):
     'type :  ID'
     global current_type
     baseclass = ast.lookup(ast.classtable, p[1])
     if (baseclass == None):
         signal_error('Class {0} does not exist!'.format(p[1]), p.lineno(1))
-    p[0] = current_type = ast.Type(baseclass)
+    p[0] = current_type = Type(baseclass)
 
 def p_var_list_plus(p):
     'var_list : var_list COMMA var'
@@ -224,13 +225,13 @@ def p_var_id(p):
     if p[2] == 0:
         ftype = current_type
     else:
-        ftype = ast.Type(current_type, params=p[2])
+        ftype = Type(current_type, params=p[2])
     if (current_context == 'class'):
         if (current_class.lookup_field(p[1])):
             signal_error('Duplicate definition of field {0} in class!'.format(p[1]), p.lineno(1))
         else:
             (v,s) = current_modifiers
-            f = ast.Field(p[1], current_class, v, s, ftype)
+            f = Field(p[1], current_class, v, s, ftype)
             current_class.add_field(p[1], f)
     else:
         # we're in a method/constructor
@@ -272,10 +273,10 @@ def p_params_end(p):
 
 def p_block(p):
     'block : LBRACE block_begin stmt_list block_end RBRACE'
-    p[0] = ast.BlockStmt(p[3], p.lineno(1))
+    p[0] = BlockStmt(p[3], p.lineno(1))
 def p_block_error(p):
     'block : LBRACE block_begin stmt_list error block_end RBRACE'
-    p[0] = ast.SkipStmt(p.lineno(1))
+    p[0] = SkipStmt(p.lineno(1))
     # error within a block; skip to enclosing block
 
 def p_block_begin(p):
@@ -297,62 +298,62 @@ def p_stmt_list(p):
 
 def p_stmt_if_else(p):
     'stmt : IF LPAREN expr RPAREN stmt ELSE stmt'
-    p[0] = ast.IfStmt(p[3], p[5], p[7], p.lineno(1))
+    p[0] = IfStmt(p[3], p[5], p[7], p.lineno(1))
 def p_stmt_if_noelse(p):
     'stmt : IF LPAREN expr RPAREN stmt'
-    p[0] = ast.IfStmt(p[3], p[5], ast.SkipStmt(None), p.lineno(1))
+    p[0] = IfStmt(p[3], p[5], SkipStmt(None), p.lineno(1))
 def p_stmt_while(p):
     'stmt : WHILE LPAREN expr RPAREN stmt'
-    p[0] = ast.WhileStmt(p[3], p[5], p.lineno(1))
+    p[0] = WhileStmt(p[3], p[5], p.lineno(1))
 def p_stmt_for(p):
     'stmt : FOR LPAREN stmt_expr_opt SEMICOLON expr_opt SEMICOLON stmt_expr_opt RPAREN stmt'
-    p[0] = ast.ForStmt(p[3], p[5], p[7], p[9], p.lineno(1))
+    p[0] = ForStmt(p[3], p[5], p[7], p[9], p.lineno(1))
 def p_stmt_return(p):
     'stmt : RETURN expr_opt SEMICOLON'
-    p[0] = ast.ReturnStmt(p[2], p.lineno(1))
+    p[0] = ReturnStmt(p[2], p.lineno(1))
 def p_stmt_stmt_expr(p):
     'stmt : stmt_expr SEMICOLON'
-    p[0] = ast.ExprStmt(p[1], p.lineno(2))
+    p[0] = ExprStmt(p[1], p.lineno(2))
 def p_stmt_break(p):
     'stmt : BREAK SEMICOLON'
-    p[0] = ast.BreakStmt(p.lineno(1))
+    p[0] = BreakStmt(p.lineno(1))
 def p_stmt_continue(p):
     'stmt : CONTINUE SEMICOLON'
-    p[0] = ast.ContinueStmt(p.lineno(1))
+    p[0] = ContinueStmt(p.lineno(1))
 def p_stmt_block(p):
     'stmt : block'
     p[0] = p[1]
 def p_stmt_var_decl(p):
     'stmt : var_decl'
-    p[0] = ast.SkipStmt(None)
+    p[0] = SkipStmt(None)
 def p_stmt_empty(p):
     'stmt : SEMICOLON'
-    p[0] = ast.SkipStmt(p.lineno(1))
+    p[0] = SkipStmt(p.lineno(1))
 def p_stmt_error(p):
     'stmt : error SEMICOLON'
     signal_error("Invalid statement", p.lineno(2))
     decaflexer.errorflag = True
-    p[0] = ast.SkipStmt(p.lineno(2))
+    p[0] = SkipStmt(p.lineno(2))
 
 # Expressions
 def p_literal_int_const(p):
     'literal : INT_CONST'
-    p[0] = ast.ConstantExpr('int', p[1], lines=p.lineno(1))
+    p[0] = ConstantExpr('int', p[1], lines=p.lineno(1))
 def p_literal_float_const(p):
     'literal : FLOAT_CONST'
-    p[0] = ast.ConstantExpr('float', p[1], lines=p.lineno(1))
+    p[0] = ConstantExpr('float', p[1], lines=p.lineno(1))
 def p_literal_string_const(p):
     'literal : STRING_CONST'
-    p[0] = ast.ConstantExpr('string', p[1], lines=p.lineno(1))
+    p[0] = ConstantExpr('string', p[1], lines=p.lineno(1))
 def p_literal_null(p):
     'literal : NULL'
-    p[0] = ast.ConstantExpr('Null', lines=p.lineno(1))
+    p[0] = ConstantExpr('Null', lines=p.lineno(1))
 def p_literal_true(p):
     'literal : TRUE'
-    p[0] = ast.ConstantExpr('True', lines=p.lineno(1))
+    p[0] = ConstantExpr('True', lines=p.lineno(1))
 def p_literal_false(p):
     'literal : FALSE'
-    p[0] = ast.ConstantExpr('False', lines=p.lineno(1))
+    p[0] = ConstantExpr('False', lines=p.lineno(1))
 
 def p_primary_literal(p):
     'primary : literal'
@@ -360,14 +361,14 @@ def p_primary_literal(p):
 def p_primary_this(p):
     'primary : THIS'
     if (current_storage_kind == 'instance'):
-        p[0] = ast.ThisExpr(p.lineno(1))
+        p[0] = ThisExpr(p.lineno(1))
     else:
         signal_error("'this' expression cannot be used in a static context", p.lineno(1))
         p[0] = None
 def p_primary_super(p):
     'primary : SUPER'
     if (current_storage_kind == 'instance'):
-        p[0] = ast.SuperExpr(p.lineno(1))
+        p[0] = SuperExpr(p.lineno(1))
     else:
         signal_error("'super' expression cannot be used in a static context", p.lineno(1))
         p[0] = None
@@ -379,7 +380,7 @@ def p_primary_newobj(p):
     cname = p[2]
     c = ast.lookup(ast.classtable, cname)
     if (c != None):
-        p[0] = ast.NewObjectExpr(c, p[4], p.lineno(1))
+        p[0] = NewObjectExpr(c, p[4], p.lineno(1))
     else:
         signal_error('Class "{0}" in "new" not defined (yet?)'.format(cname), p.lineno(2))
         
@@ -411,34 +412,34 @@ def p_lhs(p):
 
 def p_field_access_dot(p):
     'field_access : primary DOT ID'
-    p[0] = ast.FieldAccessExpr(p[1], p[3], p.lineno(2))
+    p[0] = FieldAccessExpr(p[1], p[3], p.lineno(2))
 def p_field_access_id(p):
     'field_access : ID'
     vname = p[1]
     v = current_vartable.find_in_scope(vname)
     if (v != None):
         # local variable in current scope
-        p[0] = ast.VarExpr(v, p.lineno(1))
+        p[0] = VarExpr(v, p.lineno(1))
     else:
         c = ast.lookup(ast.classtable, vname)
         if (c != None):
             # there is a class with this name
-            p[0] = ast.ClassReferenceExpr(c, p.lineno(1))
+            p[0] = ClassReferenceExpr(c, p.lineno(1))
         else:
             # reference to a non-local var; assume field
-            p[0] = ast.FieldAccessExpr(ast.ThisExpr(p.lineno(1)), vname, p.lineno(1))
+            p[0] = FieldAccessExpr(ThisExpr(p.lineno(1)), vname, p.lineno(1))
 
 def p_array_access(p):
     'array_access : primary LBRACKET expr RBRACKET'
-    p[0] = ast.ArrayAccessExpr(p[1], p[3], p.lineno(2))
+    p[0] = ArrayAccessExpr(p[1], p[3], p.lineno(2))
 
 def p_method_invocation(p):
     'method_invocation : field_access LPAREN args_opt RPAREN'
-    if (isinstance(p[1], ast.FieldAccessExpr)):
-        p[0] = ast.MethodInvocationExpr(p[1], p[3], p.lineno(2))
+    if (isinstance(p[1], FieldAccessExpr)):
+        p[0] = MethodInvocationExpr(p[1], p[3], p.lineno(2))
     else:
         # p[1] is a local variable or a class name
-        if (isinstance(p[1], ast.VarExpr)):
+        if (isinstance(p[1], VarExpr)):
             name = p[1].var.name
         else:
             name = p[1].classref.name
@@ -463,40 +464,40 @@ def p_expr_binop(p):
             | expr AND expr
             | expr OR expr
     '''
-    p[0] = ast.BinaryExpr(binops[p[2]], p[1], p[3], p.lineno(2))
+    p[0] = BinaryExpr(binops[p[2]], p[1], p[3], p.lineno(2))
 def p_expr_unop_plus(p):
     'expr : PLUS expr %prec UMINUS'
     p[0] = p[1]
 def p_expr_unop_minus(p):
     'expr : MINUS expr %prec UMINUS'
-    p[0] = ast.UnaryExpr('uminus', p[2], p.lineno(1))
+    p[0] = UnaryExpr('uminus', p[2], p.lineno(1))
 def p_expr_unop_not(p):
     'expr : NOT expr'
-    p[0] = ast.UnaryExpr('neg', p[2], p.lineno(1))
+    p[0] = UnaryExpr('neg', p[2], p.lineno(1))
 
 def p_assign_equals(p):
     'assign : lhs ASSIGN expr'
-    p[0] = ast.AssignExpr(p[1], p[3], p.lineno(2))
+    p[0] = AssignExpr(p[1], p[3], p.lineno(2))
 def p_assign_post_inc(p):
     'assign : lhs INC'
-    p[0] = ast.AutoExpr(p[1], 'inc', 'post', p.lineno(2))
+    p[0] = AutoExpr(p[1], 'inc', 'post', p.lineno(2))
 def p_assign_pre_inc(p):
     'assign : INC lhs'
-    p[0] = ast.AutoExpr(p[2], 'inc', 'pre', p.lineno(1))
+    p[0] = AutoExpr(p[2], 'inc', 'pre', p.lineno(1))
 def p_assign_post_dec(p):
     'assign : lhs DEC'
-    p[0] = ast.AutoExpr(p[1], 'dec', 'post', p.lineno(2))
+    p[0] = AutoExpr(p[1], 'dec', 'post', p.lineno(2))
 def p_assign_pre_dec(p):
     'assign : DEC lhs'
-    p[0] = ast.AutoExpr(p[2], 'dec', 'pre', p.lineno(1))
+    p[0] = AutoExpr(p[2], 'dec', 'pre', p.lineno(1))
 
 def p_new_array(p):
     'new_array : NEW type dim_expr_plus dim_star'
     if (p[4] == 0):
         t = p[2]
     else:
-        t = ast.Type(p[2], params=p[4])
-    p[0] = ast.NewArrayExpr(t, p[3], p.lineno(1))
+        t = Type(p[2], params=p[4])
+    p[0] = NewArrayExpr(t, p[3], p.lineno(1))
 
 def p_dim_expr_plus(p):
     'dim_expr_plus : dim_expr_plus dim_expr'

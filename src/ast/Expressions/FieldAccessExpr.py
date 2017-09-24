@@ -1,4 +1,8 @@
-from '../helpers' import ast_helpers 
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+from ast.Class import *
+import ast.Config as Config
 
 class FieldAccessExpr(Expr):
     def __init__(self, base, fname, lines):
@@ -29,7 +33,7 @@ class FieldAccessExpr(Expr):
                         acc = 'static'
 
                     baseclass =  btype.baseclass
-                    j = resolve_field(acc, baseclass, self.fname, current_class)
+                    j = resolve_field(acc, baseclass, self.fname, Config.current_class)
                     if (j == None):
                         signal_type_error("No accessible field with name {0} in class {1}".format(self.fname, baseclass.name), self.lines)
                         self.__typeof = Type('error')

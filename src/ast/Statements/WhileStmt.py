@@ -1,3 +1,6 @@
+from Stmt import *
+from ast.ast_helpers import *
+
 class WhileStmt(Stmt):
     def __init__(self, cond, body, lines):
         self.lines = lines

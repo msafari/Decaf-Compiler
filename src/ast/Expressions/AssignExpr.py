@@ -1,3 +1,9 @@
+from Expr import *
+from ast.ast_helpers import *
+from NewObjectExpr import *
+from FieldAccessExpr import *
+from ast.Type import *
+
 class AssignExpr(Expr):
     def __init__(self, lhs, rhs, lines):
         self.lines = lines

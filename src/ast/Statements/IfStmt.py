@@ -1,3 +1,6 @@
+from Stmt import *
+from ast.ast_helpers import *
+
 class IfStmt(Stmt):
     def __init__(self, condition, thenpart, elsepart, lines):
         self.lines = lines

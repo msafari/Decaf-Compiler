@@ -1,3 +1,9 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+from ast.Class import *
+import ast.Config as Config
+
 class MethodInvocationExpr(Expr):
     def __init__(self, field, args, lines):
         self.lines = lines
@@ -28,7 +34,7 @@ class MethodInvocationExpr(Expr):
                     baseclass =  btype.baseclass
                     argtypes = [a.typeof() for a in self.args]
                     if (all([a.isok() for a in argtypes])):
-                        j = resolve_method(acc, baseclass, self.mname, argtypes, current_class, self.lines)
+                        j = resolve_method(acc, baseclass, self.mname, argtypes, Config.current_class, self.lines)
                         
                         if (j == None):
                             self.__typeof = Type('error')

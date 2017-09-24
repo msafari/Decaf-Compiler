@@ -1,3 +1,9 @@
+from Expr import *
+from ast.ast_helpers import *
+from ast.Type import *
+from ast.Class import *
+import ast.Config as Config
+
 class NewObjectExpr(Expr):
     def __init__(self, cref, args, lines):
         self.lines = lines
@@ -13,7 +19,7 @@ class NewObjectExpr(Expr):
             # resolve the constructor name first
             argtypes = [a.typeof() for a in self.args]
             if (all([a.isok() for a in argtypes])):
-                j = resolve_constructor(current_class, self.classref, argtypes, self.lines)
+                j = resolve_constructor(Config.current_class, self.classref, argtypes, self.lines)
                 if (j == None):
                     self.__typeof = Type('error')
                 else:

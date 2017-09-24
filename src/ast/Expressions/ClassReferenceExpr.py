@@ -1,3 +1,6 @@
+from Expr import *
+from ast.Type import *
+
 class ClassReferenceExpr(Expr):
     def __init__(self, cref, lines):
         self.lines = lines

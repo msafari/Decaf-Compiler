@@ -1,3 +1,6 @@
+from Stmt import *
+from ast.ast_helpers import *
+
 class ForStmt(Stmt):
     def __init__(self, init, cond, update, body, lines):
         self.lines = lines

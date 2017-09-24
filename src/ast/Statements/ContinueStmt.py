@@ -1,3 +1,5 @@
+from Stmt import *
+
 class ContinueStmt(Stmt):
     def __init__(self, lines):
         self.lines = lines

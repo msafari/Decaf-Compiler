@@ -1,3 +1,7 @@
+from VarTable import *
+
+lastconstructor = 0
+
 class Constructor:
     """A class encoding constructors and their attributes in Decaf"""
     def __init__(self, cname, visibility):

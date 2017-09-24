@@ -1,0 +1,43 @@
+.static_data 1
+# ---A---
+M_f_7:
+#LINE 6 - var 'z1' is in t2
+#LINE 6 - Retrieve value of field x
+move_immed_i t4, 0
+hload t5, sap, t4
+#LINE 6 - Store the value in t5 in t2
+move t2, t5
+#LINE 7 - Load value for 'z2'
+#LINE 7 - Load value for 'z1'
+#LINE 7 - binary 'add' op
+iadd t6, t3, t2
+move a0, t6
+ret
+ret 
+
+move_immed_i t7, 1
+halloc t8, t7
+save t8
+call C_1
+restore t8
+C_1:
+# ---Out---
+M_print_3:
+ret 
+
+M_print_4:
+ret 
+
+M_print_5:
+ret 
+
+M_print_6:
+ret 
+
+# ---In---
+M_scan_int_1:
+ret 
+
+M_scan_float_2:
+ret 
+

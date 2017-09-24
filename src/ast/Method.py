@@ -34,5 +34,4 @@ class Method:
 
     def typecheck(self):
         Config.current_method = self
-        print "This is current_method: {0}".format(Config.current_method)
         self.body.typecheck()
